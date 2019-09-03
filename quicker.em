@@ -1322,3 +1322,127 @@ macro CreateNewCFile()
 	//插入文件头说明
 	InsertCFileEN(hOutbuf,0,szName,szContent)    
 }
+
+
+macro InsertCFileEN_zgmicro(hbuf, ln,szName,szContent)
+{
+    
+	hnewbuf = newbuf("")
+	if(hnewbuf == hNil)
+	{
+	    stop
+	}
+	GetFunctionList(hbuf,hnewbuf)
+	InsBufLine(hbuf, ln + 0,  "/*------------------------------------------------------------------------------")
+	InsBufLine(hbuf, ln + 1,  "                    COPYRIGHT (C) 2009, Vimicro Corporation")
+	InsBufLine(hbuf, ln + 2,  "                              ALL RIGHTS RESERVED")
+	InsBufLine(hbuf, ln + 3,  "")
+	InsBufLine(hbuf, ln + 4,  "This source code has been made available to you by VIMICRO on an AS-IS basis.")
+	InsBufLine(hbuf, ln + 5,  "Anyone receiving this source code is licensed under VIMICRO copyrights to use")
+	InsBufLine(hbuf, ln + 6,  "it in any way he or she deems fit, including copying it, modifying it,")
+	InsBufLine(hbuf, ln + 7,  "compiling it, and redistributing it either with or without modifications. Any")
+	InsBufLine(hbuf, ln + 8,  "person who transfers this source code or any derivative work must include the")
+	InsBufLine(hbuf, ln + 9,  "VIMICRO copyright notice and this paragraph in the transferred software.")
+       InsBufLine(hbuf, ln + 10,  "")        
+                
+    sz = GetFileName(GetBufName (hbuf))
+    InsBufLine(hbuf, ln + 11,  "  File Name     : @sz@")
+    InsBufLine(hbuf, ln + 12,  "  Version       : Initial Draft")
+    InsBufLine(hbuf, ln + 13,  "  Author        : @szName@")
+    SysTime = GetSysTime(1)
+    sz=SysTime.Year
+    sz1=SysTime.month
+    sz3=SysTime.day
+    InsBufLine(hbuf, ln + 14,  "  Created       : @sz@/@sz1@/@sz3@")
+    InsBufLine(hbuf, ln + 15,  "  Last Modified :")
+    szTmp = "  Description   : "
+    nlnDesc = ln
+    iLen = strlen (szContent)
+    InsBufLine(hbuf, ln + 16, "  Description   : ")
+    InsBufLine(hbuf, ln + 17, "")
+    
+    InsBufLine(hbuf, ln + 18, "  History       :")
+    InsBufLine(hbuf, ln + 19, "  1.Date        : @sz@/@sz1@/@sz3@")
+    InsBufLine(hbuf, ln + 20, "    Author      : @szName@")
+    InsBufLine(hbuf, ln + 21, "    Modification: Created file")
+    InsBufLine(hbuf, ln + 22, "")
+    InsBufLine(hbuf, ln + 23, "------------------------------------------------------------------------------*/")
+    InsBufLine(hbuf, ln + 24, "")
+    InsBufLine(hbuf, ln + 25, "/*----------------------------------------------*")
+    InsBufLine(hbuf, ln + 26, " * Debug switch Section                          *")
+    InsBufLine(hbuf, ln + 27, " *----------------------------------------------*/")
+    InsBufLine(hbuf, ln + 28, "")
+    InsBufLine(hbuf, ln + 29, "/*----------------------------------------------*")
+    InsBufLine(hbuf, ln + 30, " * Include File Section                            *")
+    InsBufLine(hbuf, ln + 31, " *----------------------------------------------*/")
+    InsBufLine(hbuf, ln + 32, "")
+    InsBufLine(hbuf, ln + 33, "/*----------------------------------------------*")
+    InsBufLine(hbuf, ln + 34, " * Macro Define Section                         *")
+    InsBufLine(hbuf, ln + 35, " *----------------------------------------------*/")
+    InsBufLine(hbuf, ln + 36, "")
+    InsBufLine(hbuf, ln + 37, "/*----------------------------------------------*")
+    InsBufLine(hbuf, ln + 38, " * Struct Define Section                         *")
+    InsBufLine(hbuf, ln + 39, " *----------------------------------------------*/")
+    InsBufLine(hbuf, ln + 40, "")
+    InsBufLine(hbuf, ln + 41, "/*----------------------------------------------*")
+    InsBufLine(hbuf, ln + 42, " * Prototype Declare Section                 *")
+    InsBufLine(hbuf, ln + 43, " *----------------------------------------------*/")
+    InsBufLine(hbuf, ln + 44, "")
+    InsBufLine(hbuf, ln + 45, "/*----------------------------------------------*")
+    InsBufLine(hbuf, ln + 46, " * Global Variable Declare Section         *")
+    InsBufLine(hbuf, ln + 47, " *----------------------------------------------*/")
+    InsBufLine(hbuf, ln + 48, "")
+    InsBufLine(hbuf, ln + 49, "/*----------------------------------------------*")
+    InsBufLine(hbuf, ln + 50, " * File Static Variable Define Section      *")
+    InsBufLine(hbuf, ln + 51, " *----------------------------------------------*/")
+    InsBufLine(hbuf, ln + 52, "")
+    InsBufLine(hbuf, ln + 53, "/*----------------------------------------------*")
+    InsBufLine(hbuf, ln + 54, " * Function Define Section                     *")
+    InsBufLine(hbuf, ln + 55, " *----------------------------------------------*/")
+    InsBufLine(hbuf, ln + 56, "")
+
+    if(iLen != 0)
+    {
+        return
+    }
+    
+}
+/*
+*	创建一个公司定义的.c文件
+*/
+macro CreateNewCFile_zgmicro()
+{
+	hbuf = GetCurrentBuf()
+	language = getreg(LANGUAGE)
+	/*if(language != 1)
+	{
+		language = 0
+	}*/
+	language = 1
+	szName = getreg(UserName)
+	if(strlen( szName ) == 0)
+	{
+		szMyName = Ask("Enter your name:")
+		setreg(MYNAME, szMyName)
+	}
+	isymMax = GetBufSymCount(hbuf)
+	isym = 0
+	ln = 0
+	
+	//获得当前没有后缀的文件名
+	sz = ask("Please input header file name")
+	szFileName = GetFileNameNoExt(sz)
+	szExt = GetFileNameExt(sz)        
+	szPreH = toupper (szFileName)
+	szPreH = cat("__",szPreH)
+	szExt = toupper(szExt)
+	szPreH = cat(szPreH,"_@szExt@__")
+	hOutbuf = NewBuf(sz) // create output buffer
+	if (hOutbuf == 0)
+		stop
+		
+	SetCurrentBuf(hOutbuf)
+	szContent = GetFileName(GetBufName (hbuf))	
+	//插入文件头说明
+	InsertCFileEN_zgmicro(hOutbuf,0,szName,szContent)   
+}
